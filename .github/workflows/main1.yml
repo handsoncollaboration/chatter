@@ -1,13 +1,20 @@
+name: Unzip archive.zip on push
+
+on:
+  push:
+    branches:
+      - main  # or your default branch
+
 jobs:
   unzip-file:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # needed to commit back
+      contents: write  # needed to commit the extracted files
 
     steps:
       - uses: actions/checkout@v4
       
-      - name: Find archive.zip
+      - name: Find archive.zip and unzip it
         run: |
           filepath=$(find $GITHUB_WORKSPACE -name archive.zip | head -n 1)
           echo "Found archive.zip at $filepath"
@@ -19,5 +26,5 @@ jobs:
           git config --local user.email "github-actions@users.noreply.github.com"
           git config --local user.name "github-actions"
           git add extracted_folder
-          git commit -m "Extracted archive.zip"
+          git commit -m "Extracted archive.zip contents"
           git push
