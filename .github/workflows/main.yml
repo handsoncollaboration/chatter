@@ -21,13 +21,5 @@ jobs:
           echo "✅ Unzipped files:"
           ls -R unzipped/
 
-      - name: Optional: Inspect files
-        run: |
-          echo "Inspecting files safely..."
-          chmod -R +r unzipped/
-          CONFIG_FILE="unzipped/config.yaml"
-          if [ -f "$CONFIG_FILE" ]; then
-            echo "--- $CONFIG_FILE ---"
-            head -n 20 "$CONFIG_FILE"
-          else
-            echo "No config.yaml found in unzipped/"
+      - name: Optional: Inspect config.yaml
+        run: test -f unzipped/config.yaml && head -n 20 unzipped/config.yaml || echo "No config.yaml found."
