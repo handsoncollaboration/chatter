@@ -23,9 +23,11 @@ jobs:
 
       - name: Optional: Inspect files
         run: |
-          echo "You can inspect and tweak configuration here."
-          # Example: show first 20 lines of a config file if exists
-          if [ -f unzipped/config.yaml ]; then
-            echo "--- config.yaml ---"
-            head -n 20 unzipped/config.yaml
-          fi
+          echo "Inspecting files safely..."
+          chmod -R +r unzipped/
+          CONFIG_FILE="unzipped/config.yaml"
+          if [ -f "$CONFIG_FILE" ]; then
+            echo "--- $CONFIG_FILE ---"
+            head -n 20 "$CONFIG_FILE"
+          else
+            echo "No config.yaml found in unzipped/"
