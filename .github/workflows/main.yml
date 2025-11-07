@@ -1,23 +1,21 @@
-name: Unzip File Workflow
+name: Unzip Repository File
 
 on:
-  workflow_dispatch:  # allows you to run manually from GitHub Actions tab
+  workflow_dispatch:  # run manually
   push:
     branches: [ main ]
 
 jobs:
-  unzip-file:
+  unzip:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Ensure unzip is available
-        run: sudo apt-get install -y unzip
-
-      - name: Unzip a file
+      - name: Unzip uploaded file
         run: |
-          echo "Unzipping archive..."
-          unzip path/to/your-file.zip -d extracted/
-          ls -R extracted/
+          echo "Unzipping the file..."
+          unzip archive.zip -d unzipped/
+          echo "Contents after extraction:"
+          ls -R unzipped/
