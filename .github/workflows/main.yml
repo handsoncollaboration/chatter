@@ -1,7 +1,7 @@
-name: Unzip Repository File
+name: Unzip Archive File
 
 on:
-  workflow_dispatch:  # run manually
+  workflow_dispatch:  # allows manual run
   push:
     branches: [ main ]
 
@@ -12,10 +12,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true  # if you used Git LFS for large files
 
-      - name: Unzip uploaded file
+      - name: Verify file exists
         run: |
-          echo "Unzipping the file..."
-          unzip archive.zip -d unzipped/
-          echo "Contents after extraction:"
+          echo "Checking for archive.zip..."
+          ls -lh
+          test -f archive.zip || (echo "❌ archive.zip not found!" && exit 1)
+
+      - name: Ensure unzip is available
+        run: sudo apt-get update && sudo apt-get install -y unzip
+
+      - name: Unzip archive.zip
+        run: |
+          echo "Unzipping archive.zip..."
+          unzip -o archive.zip -d unzipped/
+          echo "✅ Done. Extracted contents:"
           ls -R unzipped/
