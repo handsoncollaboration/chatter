@@ -1,0 +1,23 @@
+jobs:
+  unzip-file:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed to commit back
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Find archive.zip
+        run: |
+          filepath=$(find $GITHUB_WORKSPACE -name archive.zip | head -n 1)
+          echo "Found archive.zip at $filepath"
+          mkdir -p extracted_folder
+          unzip -q "$filepath" -d extracted_folder
+
+      - name: Commit extracted files
+        run: |
+          git config --local user.email "github-actions@users.noreply.github.com"
+          git config --local user.name "github-actions"
+          git add extracted_folder
+          git commit -m "Extracted archive.zip"
+          git push
