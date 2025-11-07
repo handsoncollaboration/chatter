@@ -1,7 +1,7 @@
-name: Unzip Archive File
+name: Unzip and Commit Files
 
 on:
-  workflow_dispatch:  # allows manual run
+  workflow_dispatch:
   push:
     branches: [ main ]
 
@@ -12,21 +12,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          lfs: true  # if you used Git LFS for large files
-
-      - name: Verify file exists
-        run: |
-          echo "Checking for archive.zip..."
-          ls -lh
-          test -f archive.zip || (echo "❌ archive.zip not found!" && exit 1)
 
       - name: Ensure unzip is available
         run: sudo apt-get update && sudo apt-get install -y unzip
 
       - name: Unzip archive.zip
         run: |
-          echo "Unzipping archive.zip..."
+          mkdir -p unzipped
           unzip -o archive.zip -d unzipped/
-          echo "✅ Done. Extracted contents:"
+          echo "✅ Unzipped files:"
           ls -R unzipped/
+
+      - name: Commit unzipped files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add unzipped/
+          git diff --cached --quiet || git commit -m "Add unzipped files"
+          git push
